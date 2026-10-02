@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Repair Station — Unit logs{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <h1>Unit logs</h1>
+  <p class="toolbar">
+    <button type="button" id="logout">Logout</button>
+  </p>
+  <script>
+    document.getElementById("logout").onclick = () => {
+      // Yes, this is the only way to log out with basic auth...
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", location.href, true, "logout", "logout");
+      xhr.onloadend = () => location.replace("/");
+      xhr.send();
+    };
+  </script>
+
+  <h2>Logs</h2>
+  <div class="terminal">
+    <div class="bar">unit.log</div>
+    <div class="body">
+      {% for line in lines %}
+      <div class="log-line{% if line.startswith(fix_prefix) %} critical{% endif %}">
+        <pre>{{ line }}</pre>
+        {% if line.startswith(fix_prefix) %}
+        <form method="post" action="/admin/run">
+          <input type="hidden" name="line" value="{{ offset + loop.index0 }}">
+          <button type="submit">Auto-Repair</button>
+        </form>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="log-line">
+        <pre>(no entries)</pre>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

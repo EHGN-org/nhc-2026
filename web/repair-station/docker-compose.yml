@@ -1,0 +1,8 @@
+services:
+  repair-station:
+    build: .
+    restart: unless-stopped
+    environment:
+      FLAG: "NHC{wh0_C00K3D_Ch3RrYPy_1T_N33Ds_S0M3_R3P41Rs}"
+    ports:
+      - "1337:1337"

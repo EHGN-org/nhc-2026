@@ -1,0 +1,14 @@
+# docker compose run --rm --build compile && docker compose run --rm compile-windows
+services:
+  compile:
+    build: .
+    user: "1000:1000"
+    volumes:
+      - .:/app
+  compile-windows:
+    image: tobix/pywine:3.12
+    user: "1000:1000"
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: ["./build-windows.sh"]

@@ -1,0 +1,11 @@
+services:
+  modus-operandi:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "1337:1337"
+    mem_limit: 384m
+    cpus: "2.0"
+    pids_limit: 96
+    environment:
+      FLAG: NHC{ctr_1S_Cl34Rly_Tr1V14Lly_R3Tr13V4Bl3}

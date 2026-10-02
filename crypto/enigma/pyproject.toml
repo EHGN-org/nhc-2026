@@ -1,0 +1,4 @@
+[project]
+dependencies = ["py-enigma", "morse-audio-decoder", "pydub", "audioop-lts"]
+name = "enigma"
+version = "0.1.0"

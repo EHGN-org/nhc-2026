@@ -1,0 +1,6 @@
+services:
+  go:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8000:8080"

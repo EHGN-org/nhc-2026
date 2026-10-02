@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Repair Station — {{ status|safe }}{% endblock %}
+
+{% block content %}
+<div class="wrap error">
+  <h1>{{ status|safe }}</h1>
+  {% if message %}
+  <p class="tagline">{{ message|safe }}</p>
+  {% endif %}
+  <p><a class="btn" href="/">Back</a></p>
+</div>
+{% endblock %}

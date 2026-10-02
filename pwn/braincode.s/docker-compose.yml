@@ -1,0 +1,9 @@
+services:
+  braincode.s:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "1337:1337"
+    mem_limit: 512m
+    cpus: "1.0"
+    pids_limit: 96

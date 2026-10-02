@@ -1,0 +1,6 @@
+services:
+  qr-jigsaw:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "1337:80"

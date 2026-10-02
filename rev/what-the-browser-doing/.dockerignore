@@ -1,0 +1,8 @@
+*
+!app.py
+!gen.py
+!requirements.txt
+!templates/
+!templates/*
+!js/
+!js/*

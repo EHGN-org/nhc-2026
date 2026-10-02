@@ -1,0 +1,269 @@
+:root {
+  --bg: #111110;
+  --fg: #c8c8c4;
+  --muted: #8a8a84;
+  --red: #c0392b;
+  --repair: #e74c3c;
+  --green: #27ae60;
+  --blue: #2980b9;
+  --black: #000;
+  --panel: #1a1a18;
+  --border: #3a3a36;
+  --unit-bg: #292929;
+  --unit-border: #353535;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.wrap {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+h2 {
+  margin: 1.75rem 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.tagline {
+  margin: 0 0 2rem;
+  color: var(--muted);
+}
+
+.error {
+  font-family: var(--mono);
+}
+
+.compare {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  margin: 0 0 2rem;
+}
+
+.unit {
+  position: relative;
+  margin: 0;
+  text-align: center;
+  background: var(--unit-bg);
+  border: 2px solid var(--unit-border);
+  padding: 1rem 1.25rem 0.75rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  img {
+    position: relative;
+    display: block;
+    width: 8rem;
+    height: auto;
+    image-rendering: pixelated;
+  }
+
+  figcaption {
+    position: relative;
+    margin-top: 0.6rem;
+    padding: 0.15rem 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    background: var(--black);
+  }
+
+  &.defective {
+    &::before {
+      background: linear-gradient(to top, color-mix(in srgb, var(--red) 55%, transparent), transparent);
+    }
+
+    &:hover {
+      border-color: var(--red);
+    }
+
+    figcaption {
+      color: var(--red);
+      border: 1px solid var(--red);
+    }
+  }
+
+  &.operational {
+    &::before {
+      background: linear-gradient(to top, color-mix(in srgb, var(--green) 55%, transparent), transparent);
+    }
+
+    &:hover {
+      border-color: var(--green);
+    }
+
+    figcaption {
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+  }
+}
+
+.arrow {
+  font-size: 2rem;
+  color: var(--fg);
+  line-height: 1;
+}
+
+.home {
+  text-align: center;
+
+  hr {
+    width: 24rem;
+    margin: 0 auto 1.5rem;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+}
+
+button,
+.btn,
+.login {
+  appearance: none;
+  display: inline-block;
+  padding: 0.4rem 0.85rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--blue);
+  background: var(--black);
+  border: 1px solid var(--blue);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+
+  &::before {
+    content: "> ";
+  }
+
+  &:hover {
+    background: var(--blue);
+    color: var(--bg);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.login {
+  padding: 0.65rem 1.4rem;
+}
+
+a {
+  color: var(--fg);
+}
+
+.terminal {
+  background: var(--black);
+  border: 1px solid var(--border);
+  margin: 1rem 0 1.5rem;
+
+  .bar {
+    padding: 0.35rem 0.75rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  pre {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  > pre {
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    white-space: pre;
+    overflow-wrap: normal;
+  }
+
+  .body {
+    padding: 0.65rem 1rem;
+  }
+}
+
+.log-line {
+  margin: 0.2rem 0;
+
+  pre {
+    display: inline;
+  }
+
+  form {
+    display: inline;
+    margin-left: 0.5rem;
+  }
+
+  &.critical {
+    pre {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    button {
+      color: var(--repair);
+      border-color: var(--repair);
+
+      &:hover {
+        background: var(--repair);
+        color: var(--bg);
+      }
+    }
+  }
+}
+
+.toolbar {
+  margin: 0 0 1rem;
+}

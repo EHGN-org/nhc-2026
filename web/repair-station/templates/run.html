@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Repair Station — Repair output{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <h1>Repair output</h1>
+  <div class="terminal">
+    <div class="bar">repair.out</div>
+    <pre>{{ output }}</pre>
+  </div>
+  <p><a class="btn" href="/admin">Back</a></p>
+</div>
+{% endblock %}

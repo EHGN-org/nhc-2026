@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>QR Jigsaw Puzzle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400;0,500;0,600;0,700&family=Metal+Mania&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- TIP: You won't find a solution here in the code! You really have to solve this jigsaw puzzle by yourself -->
+  <a class="skip-link" href="#table">Skip to puzzle</a>
+  <div class="container">
+    <p id="status" class="status" hidden></p>
+    <main id="table" class="table">
+      <div class="page">
+      <span class="bolt bolt--tl" aria-hidden="true"></span>
+      <span class="bolt bolt--tr" aria-hidden="true"></span>
+      <span class="bolt bolt--bl" aria-hidden="true"></span>
+      <span class="bolt bolt--br" aria-hidden="true"></span>
+      <h1 class="title">QR Jigsaw Puzzle</h1>
+      <div class="workspace">
+      <div id="stage" class="stage">
+      <div id="board" class="board" role="grid" aria-label="Puzzle board"></div>
+      <div id="toolbar" class="toolbar">
+        <p id="remaining" class="remaining">25 pieces left</p>
+        <div id="controls" class="controls">
+          <label class="labels">
+            <input type="checkbox" id="labels">
+            Labels
+          </label>
+          <button type="button" id="reset" class="reset">Reset</button>
+        </div>
+      </div>
+      </div>
+      <div id="tray" class="tray"></div>
+      </div>
+      </div>
+    </main>
+  </div>
+  <div id="live" class="sr-only" aria-live="polite"></div>
+  <script>
+    const PIECE_COUNT = 25;
+    const BOX_SIZE = 10;
+    const FULL_WIDTH = 250;
+    const FULL_HEIGHT = 250;
+  </script>
+  <script src="app.js" defer></script>
+</body>
+
+</html>

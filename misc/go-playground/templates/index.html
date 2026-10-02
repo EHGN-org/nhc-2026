@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Go Playground</title>
+  <style>
+    :root {
+      --blue: #007d9c;
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #d6dde3;
+      --bg: #f5f7f8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.45 "Noto Sans", "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--blue);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 20px;
+    }
+
+    header b {
+      font-size: 20px;
+    }
+
+    header span {
+      color: #d7f3fa;
+      font-size: 13px;
+    }
+
+    header .grow {
+      flex: 1;
+    }
+
+    button {
+      font: inherit;
+      border: 0;
+      border-radius: 4px;
+      padding: 8px 16px;
+      background: #00add8;
+      color: #04252d;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    form {
+      flex: 1;
+      display: grid;
+      grid-template-rows: minmax(220px, 1.3fr) minmax(160px, 1fr);
+      min-height: 0;
+    }
+
+    .editor {
+      min-height: 0;
+    }
+
+    .editor .CodeMirror {
+      height: 100%;
+      font: 13px/1.5 ui-monospace, Menlo, monospace;
+    }
+
+    textarea,
+    pre {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      font: 13px/1.5 ui-monospace, Menlo, monospace;
+    }
+
+    textarea {
+      padding: 16px 18px;
+      resize: none;
+      outline: none;
+    }
+
+    .out {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .label {
+      padding: 8px 14px;
+      background: #eef3f6;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .label .time {
+      text-transform: none;
+      font-weight: 600;
+    }
+
+    pre {
+      padding: 14px 16px;
+      overflow: auto;
+      background: #0f171b;
+      color: #d5e6ec;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .out.err .label {
+      background: #f8e8e8;
+      color: #a33;
+    }
+
+    pre.err {
+      color: #ffb4a8;
+    }
+
+    .CodeMirror .err-line {
+      background: #ffdbd7;
+    }
+
+    .CodeMirror .err-token {
+      border-bottom: 2px solid #d93025;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+</head>
+
+<body>
+  <header>
+    <b>Go Playground</b>
+    <span>Compile and run Go snippets</span>
+    <div class="grow"></div>
+    <button type="submit" form="run">Run</button>
+  </header>
+  <form id="run" method="post">
+    <div class="editor">
+      <textarea name="code" spellcheck="false">{{ code }}</textarea>
+    </div>
+    <div class="out{% if error %} err{% endif %}">
+      <div class="label">{% if error %}Error{% else %}Output{% endif %}{% if elapsed is not none %} <span
+          class="time">({{ '%.2f'|format(elapsed) }}s)</span>{% endif %}</div>
+      <pre{% if error %} class="err" {% endif %}>{{ output }}</pre>
+    </div>
+  </form>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/go/go.min.js"></script>
+  <script>
+    const form = document.getElementById("run");
+    const cm = CodeMirror.fromTextArea(document.querySelector('textarea[name="code"]'), {
+      mode: "text/x-go",
+      lineNumbers: true,
+      indentUnit: 4,
+      tabSize: 4,
+      indentWithTabs: true,
+      lineWrapping: true,
+      extraKeys: {
+        "Ctrl-Enter": () => form.requestSubmit(),
+        "Cmd-Enter": () => form.requestSubmit(),
+      },
+    });
+
+    function b64urlEncode(bytes) {
+      let bin = "";
+      for (const b of bytes) bin += String.fromCharCode(b);
+      return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    }
+
+    function b64urlDecode(s) {
+      const bin = atob(s.replace(/-/g, "+").replace(/_/g, "/"));
+      const out = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      return out;
+    }
+
+    async function compress(text) {
+      const stream = new Blob([text]).stream().pipeThrough(new CompressionStream("gzip"));
+      return b64urlEncode(new Uint8Array(await new Response(stream).arrayBuffer()));
+    }
+
+    async function decompress(hash) {
+      const stream = new Blob([b64urlDecode(hash)]).stream().pipeThrough(new DecompressionStream("gzip"));
+      return new TextDecoder().decode(await new Response(stream).arrayBuffer());
+    }
+
+    (async () => {
+      const hash = location.hash.replace(/^#/, "");
+      if (hash) {
+        try {
+          cm.setValue(await decompress(hash));
+        } catch (e) { }
+      }
+      highlightErrors();
+    })();
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      cm.save();
+      form.action = location.pathname + "#" + await compress(cm.getValue());
+      form.submit();
+    });
+
+    let errLines = [];
+    let errMarks = [];
+    let errCode = "";
+
+    function clearErrors() {
+      for (const line of errLines) cm.removeLineClass(line, "background", "err-line");
+      for (const mark of errMarks) mark.clear();
+      errLines = [];
+      errMarks = [];
+      errCode = "";
+    }
+
+    function highlightErrors() {
+      const pre = document.querySelector(".out.err pre");
+      if (!pre) return;
+      const re = /main\.go:(\d+):(\d+):\s*(.*)/g;
+      let m, found = false;
+      while ((m = re.exec(pre.textContent))) {
+        const line = parseInt(m[1], 10) - 1;
+        const ch = parseInt(m[2], 10) - 1;
+        const msg = m[3].trim();
+        if (line < 0 || line >= cm.lineCount()) continue;
+        cm.addLineClass(line, "background", "err-line");
+        errLines.push(line);
+        const token = cm.getTokenAt({ line, ch: ch + 1 });
+        const end = token.end > ch ? token.end : ch + 1;
+        errMarks.push(cm.markText({ line, ch }, { line, ch: end }, {
+          className: "err-token",
+          attributes: { title: msg },
+        }));
+        if (!found) cm.scrollIntoView({ line, ch });
+        found = true;
+      }
+      if (found) errCode = cm.getValue();
+    }
+
+    cm.on("change", () => {
+      if (errCode && cm.getValue() !== errCode) clearErrors();
+    });
+  </script>
+</body>
+
+</html>

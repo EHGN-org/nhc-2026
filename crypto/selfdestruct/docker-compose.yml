@@ -1,0 +1,11 @@
+services:
+  selfdestruct:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "1337:1337"
+    mem_limit: 384m
+    cpus: "2.0"
+    pids_limit: 96
+    environment:
+      FLAG: NHC{bl1Nd3D_By_Th3_L1Ghts_T0_G3T_Th4T_Ww:}

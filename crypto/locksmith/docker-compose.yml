@@ -1,0 +1,11 @@
+services:
+  locksmith:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "1337:1337"
+    mem_limit: 256m
+    cpus: "2.0"
+    pids_limit: 96
+    environment:
+      FLAG: NHC{32_P3Rf3Ctly_1D3Nt1C4L_K3Ys_Du3_T0_P4Dd1Ng}

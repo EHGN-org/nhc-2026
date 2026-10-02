@@ -1,0 +1,6 @@
+services:
+  sw:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "1337:8080"

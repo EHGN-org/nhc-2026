@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="wrap home">
+  <h1>Repair Station</h1>
+  <p class="tagline">Cyberdyne field repair. Restore defective units to operational status.</p>
+  <div class="compare">
+    <figure class="unit defective">
+      <img src="/static/killer-robot-pixel-defective.png" alt="Defective unit">
+      <figcaption>DEFECTIVE</figcaption>
+    </figure>
+    <div class="arrow" aria-hidden="true">&rarr;</div>
+    <figure class="unit operational">
+      <img src="/static/killer-robot-pixel.png" alt="Operational unit">
+      <figcaption>OPERATIONAL</figcaption>
+    </figure>
+  </div>
+  <hr>
+  <p><a class="login" href="/admin">Technician login</a></p>
+</div>
+{% endblock %}
